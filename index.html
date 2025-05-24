@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="apple-touch-icon" sizes="57x57" href="assets/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="assets/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="assets/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="assets/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="assets/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="assets/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="assets/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+    <link rel="manifest" href="assets/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="assets/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <meta name="title" content="Human Face detection using javascript while upload">
+    <meta name="description" content="Human Face detection using javascript while upload">
+    <meta name="keywords" content="Face Detection using javascript, Human Face detection using javascript while upload">
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="language" content="English">
+
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+
+    <style type="text/css">
+        .camera-container {
+            position: relative;
+            width: 100%;
+            height: 360px;
+        }
+
+        video,
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .onex-info {
+            color: #0d6efd;
+        }
+
+        .onex-success {
+            color: #02b160;
+            font-weight: 600;
+        }
+
+        .onex-danger {
+            color: #fb152b;
+            font-weight: 600;
+        }
+
+        button:disabled {
+            pointer-events: none;
+            opacity: 0.6;
+            cursor: not-allowed;
+            background-color: #ddd !important;
+            border-color: #ddd !important;
+        }
+
+        .gradient-text {
+            font-size: 2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-align: center;
+            background-image: linear-gradient(45deg, #ff6a00, #ee0979, #8e2de2, #4a00e0, #ff6a00);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientAnimation 6s infinite linear;
+            letter-spacing: 2px;
+            text-shadow: 4px 4px 10px rgba(255, 105, 180, 0.3);
+            display: inline-block;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
+
+    <title>Human Face detection using javascript while upload - By Arindam Roy</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-md-12 text-center">
+                <h1 class="gradient-text d-flex flex-column text-center">
+                    <span><strong>Human Face detection using JavaScript while upload</strong></span>
+                    <span class="w-100" style="font-size: 1rem;">– By Arindam Roy</span>
+                </h1>
+                <hr />
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <label class="btn btn-primary">
+                            Upload Your Photo
+                            <input type="file" class="d-none" accept="image/*" id="imageInput" />
+                        </label>
+                        <p class="mt-2 onex-info" id="status"></p>
+                    </div>
+                    <div class="card-body text-center position-relative" id="previewContainer">
+                        <img src="assets/user.png" id="previewImage" style="max-width: 100%;">
+                    </div>
+                    <!-- <div class="card-footer text-center">
+                        <p class="text-dark fw-bold">Authenticate Yourself</p>
+                    </div> -->
+                </div>
+            </div>
+            <div class="col-md-6">
+                <button type="button" class="btn btn-success" disabled id="uploadButton">Save & Upload</button>
+                <div id="uploadStatus"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="assets/sweetalert2@11.js"></script>
+    <script src="assets/face-api.js/dist/face-api.min.js"></script>
+    <script>
+
+        Swal.fire({
+            title: "Please wait for a while",
+            html: "System is preparing to process your photo",
+            timerProgressBar: true,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", async function () {
+
+            const imageInput = document.getElementById('imageInput');
+            const uploadButton = document.getElementById('uploadButton');
+            const statusText = document.getElementById('status');
+            const previewImage = document.getElementById('previewImage');
+            const uploadStatus = document.getElementById("uploadStatus");
+
+            if (typeof faceapi === "undefined") {
+                statusText.innerText = "❌ Sonething wrong! faceapi is not loaded.";
+                statusText.style.color = "#dc3545";
+                console.error("❌ Sonething wrong! faceapi is not loaded.");
+                return;
+            }
+
+            console.log("✅ FaceAPI loaded successfully.");
+
+            let selectedImage = null;
+            let canvas = null;
+
+            async function loadFaceAPI() {
+                statusText.innerText = "🔄 Loading...";
+                statusText.style.color = "#0dcaf0";
+                console.log("🔄 Loading FaceAPI models...");
+                await faceapi.nets.tinyFaceDetector.loadFromUri('assets/models');
+                await faceapi.nets.faceLandmark68Net.loadFromUri('assets/models');
+                await faceapi.nets.faceRecognitionNet.loadFromUri('assets/models');
+                await faceapi.nets.ssdMobilenetv1.loadFromUri('assets/models');
+                statusText.innerText = "";
+                statusText.style.color = "#000000";
+                console.log("✅ FaceAPI models loaded successfully.");
+            }
+
+            async function detectFace(imageFile) {
+                const img = await faceapi.bufferToImage(imageFile);
+                previewImage.src = URL.createObjectURL(imageFile);
+                previewImage.style.display = 'block';
+
+                // Wait for image to load before processing
+                previewImage.onload = async () => {
+                    if (canvas) {
+                        canvas.remove();
+                    }
+
+                    // Create canvas for drawing
+                    canvas = faceapi.createCanvasFromMedia(previewImage);
+                    const previewContainer = document.getElementById('previewContainer');
+                    previewContainer.appendChild(canvas);
+
+                    // Style canvas inside preview container
+                    const { width, height } = previewImage.getBoundingClientRect();
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    canvas.style.position = "absolute";
+                    canvas.style.left = "15px";
+                    canvas.style.top = "15px";
+                    canvas.style.width = `${width}px`;
+                    canvas.style.height = `${height}px`;
+
+                    //const detections = await faceapi.detectAllFaces(previewImage, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptors();
+
+                    const detections = await faceapi.detectAllFaces(
+                        previewImage,
+                        new faceapi.TinyFaceDetectorOptions({
+                            inputSize: 512,
+                            scoreThreshold: 0.4
+                        })
+                    );
+
+                    if (detections.length === 1) {
+                        statusText.innerText = "✅ Face has been detected! You can upload.";
+                        statusText.style.color = "#198754";
+                        uploadButton.disabled = false;
+                    } else if (detections.length > 1) {
+                        statusText.innerText = "❌ Multiple faces detected! Please upload an image with only one person.";
+                        statusText.style.color = "#dc3545";
+                        uploadButton.disabled = true;
+                    } else {
+                        statusText.innerText = "❌ No human face detected! Please upload a valid photo.";
+                        statusText.style.color = "#dc3545";
+                        uploadButton.disabled = true;
+                    }
+
+                    faceapi.matchDimensions(canvas, { width, height });
+                    const resizedDetections = faceapi.resizeResults(detections, { width, height });
+                    //faceapi.draw.drawDetections(canvas, resizedDetections);
+
+                    const boxColor = (detections.length > 1) ? 'red' : 'green';
+                    const drawOptions = {
+                        label: detections.length === 1 ? '1' : '1+',
+                        boxColor: detections.length === 1 ? 'green' : 'red',
+                        lineWidth: 3
+                    };
+
+                    resizedDetections.forEach(detection => {
+                        const drawBox = new faceapi.draw.DrawBox(detection.box, drawOptions);
+                        drawBox.draw(canvas);
+                    });
+                };
+
+            }
+
+            imageInput.addEventListener('change', async (event) => {
+                uploadStatus.style.display = 'none';
+                
+                selectedImage = event.target.files[0];
+
+                if (!selectedImage) return;
+
+                const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+
+                if (!validTypes.includes(selectedImage.type)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid File Type',
+                        text: 'Please upload an image file (jpg, jpeg, png, webp only).',
+                    });
+                    imageInput.value = ''; // reset input
+                    previewImage.src = 'assets/user.png';
+                    statusText.innerText = '';
+                    uploadButton.disabled = true;
+                    return;
+                }
+
+                statusText.innerText = "🔄 Detecting face...";
+                statusText.style.color = "#0dcaf0";
+                uploadButton.disabled = true;
+                await detectFace(selectedImage);
+            });
+
+
+            // Load FaceAPI models
+            await loadFaceAPI();
+        });
+
+        uploadButton.addEventListener('click', () => {
+            uploadStatus.style.display = 'block';
+            uploadStatus.innerHTML = "Uploaded to server...";
+        });
+
+        setTimeout(() => {
+            Swal.close();
+        }, 5000);
+    </script>
+</body>
+
+</html>
